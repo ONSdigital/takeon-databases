@@ -1,0 +1,8 @@
+.git
+.idea
+.gitignore
+target
+dockerfile
+readme.md
+*.imi
+Jenkinsfile
