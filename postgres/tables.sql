@@ -1,20 +1,6 @@
-**
-DROP ONLY
-**
-
-Drop Table If Exists FormDefinition;
-Drop Table If Exists ValidationAttribute;
-Drop Table If Exists ValidationParameter;
-Drop Table If Exists ValidationOutput;
-Drop Table If Exists ValidationForm;
-Drop Table If Exists Response;
-Drop Table If Exists Contributor;
-Drop Table If Exists Form;
-Drop Table If Exists Question;
-Drop Table If Exists ValidationPeriod;
-Drop Table If Exists ValidationRule;
-Drop Table If Exists Survey;
-
+CREATE DATABASE CollectionDev;
+\c collectiondev;
+SET search_path TO dev01,public;
 
 Create Table Survey
 (
@@ -235,26 +221,6 @@ Create Table ValidationOutput
     Foreign Key (Reference, Period, Survey) References Contributor (Reference, Period, Survey)
 );
 Create Index idx_validationoutput_referenceperiodsurvey On ValidationOutput(Reference, Period, Survey);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**************************
 
 Delete From Survey;
 Insert Into Survey
