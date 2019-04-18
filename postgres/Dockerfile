@@ -7,7 +7,7 @@ WORKDIR /postgres
 
 # Accept EULA
 ENV POSTGRES_PASSWORD=docker
-
+ENV HOSTNAME=localhost
 # Set DB environment
 #ENV SA_PASSWORD=aVerySecurePassword!123
 ENV DB_NAME=CollectionDev
@@ -20,7 +20,9 @@ RUN apk update \
     && apk add -u postgis \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apk add --no-cache --virtual .build-deps gcc musl-dev
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev && \
+    apk add g++ && \
+    apk add python3-dev
 
 RUN apk add freetds-dev && \
 	apk add py3-pip && \
@@ -39,4 +41,6 @@ COPY tables.sql /docker-entrypoint-initdb.d/
 # RUN mv /etc/init.d/postgresql /postgres
 # RUN rm -rf /etc/init.d/postgresql 
 # Run entrypoint
+RUN pip3 install psycopg2
+RUN python3 generateContributors.py
 # CMD  exec /bin/ash Entry.sh

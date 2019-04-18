@@ -1,7 +1,9 @@
 """Generate an arbitrary number of contributors and insert them into an MS SQL Server database
 """
 
-import pyodbc
+#import pyodbc
+#import pypostgresql
+import psycopg2 as psycopg
 import random
 import datetime
 import os
@@ -125,12 +127,13 @@ class Contributor():
 
 class SimpleMsSqlConnection():
     def __init__(self, ServerName = "", Database = ""):
-        self.Driver = '{ODBC Driver 17 for SQL Server}'
+        # self.Driver = '{ODBC Driver 17 for SQL Server}'
+        self.Driver = '{PostgreSQL Unicode}'
         self.ConnectionString = "Driver={};Server={};Database={};UID=sa;PWD={}".format(self.Driver, ServerName, Database, 
 os.getenv('SA_PASSWORD'))
 
     def connect(self):
-        self.connection = pyodbc.connect(self.ConnectionString)
+        self.connection = psycopg.connect(self.ConnectionString)
         self.cursor = self.connection.cursor()
         self.cursor.fast_executemany = True
 
@@ -139,7 +142,7 @@ os.getenv('SA_PASSWORD'))
             self.connect()
             self.cursor.executemany(command,parameters)
             self.connection.commit()
-        except pyodbc.Error as e:
+        except Exception as e:
             print(str(e))
         finally:
             self.disconnect()
@@ -168,7 +171,7 @@ def generateContributorAttributes(reference='49900000000', survey='1', period='1
     return contributor.getAttributeValues()
 
 def insertContributorsToDb(sqlParameters = ''):
-    query = "Insert Into [dev01].Contributor (Reference,Period,Survey,FormID,Status,ReceiptDate,LockedBy," \
+    query = "Insert Into [public].Contributor (Reference,Period,Survey,FormID,Status,ReceiptDate,LockedBy," \
             "LockedDate,FormType,Checkletter,FrozenSicOutdated,RuSicOutdated,FrozenSic,RuSic,FrozenEmployees," \
             "Employees,FrozenEmployment,Employment,FrozenFteEmployment,FteEmployment,FrozenTurnover,Turnover," \
             "EnterpriseReference,WowEnterpriseReference,CellNumber,Currency,VatReference,PayeReference," \
