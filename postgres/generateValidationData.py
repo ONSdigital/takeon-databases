@@ -3,7 +3,7 @@ import os
 import random
 
 # Variables
-user = "takeonadmin@takeon"
+user = os.getenv('AZ_COLLECTION_DB_USER')
 sslmode = "require"
 password = os.getenv('AZ_COLLECTION_DB_PASSWORD')
 host = os.getenv('AZ_COLLECTION_DB_SERVER')

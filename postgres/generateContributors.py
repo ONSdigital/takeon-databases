@@ -128,7 +128,7 @@ class SimpleMsSqlConnection():
     def __init__(self, Database = ""):
         # self.Driver = '{ODBC Driver 17 for SQL Server}'
         # self.Driver = '{PostgreSQL Unicode}'
-        self.user = "takeonadmin@takeon"
+        self.user = os.getenv('AZ_COLLECTION_DB_USER')
         self.sslmode = "require"
         self.password = os.getenv('AZ_COLLECTION_DB_PASSWORD')
         self.host = os.getenv('AZ_COLLECTION_DB_SERVER')
