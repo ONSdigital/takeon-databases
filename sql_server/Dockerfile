@@ -9,7 +9,6 @@ ENV ACCEPT_EULA=Y
 ENV MSSQL_MSSQL_TCP_PORT=1234
 
 # Set DB environment
-ENV SA_PASSWORD=aVerySecurePassword!123
 ENV DB_NAME=CollectionDev
 
 # Get updates and install
