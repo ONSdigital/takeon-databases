@@ -35,9 +35,9 @@ class AddData:
         self.months = ["0{}".format(i) if i < 10 else "{}".format(i) for i in range(1, 13)]
         self.surveys = ["066", "067", "077", "076"]
         # Construct come contributor keys from the base data
-        self.contributor_key = (self.years[random.randint(0, len(self.years)-1)] 
+        self.contributor_key = (str(random.randint(49900000000, 49901000000)) + self.years[random.randint(0, len(self.years)-1)] 
                                 + self.months[random.randint(0, len(self.months)-1)] 
-                                + self.surveys[random.randint(0, len(self.surveys)-1)] for i in range(10000))
+                                + self.surveys[random.randint(0, len(self.surveys)-1)] for i in range(1000000))
         # We will be using this dictionary to keep track of all
         # our contributors and their attributes
         self.contributor_dict = {i: {} for i in self.contributor_key}
@@ -48,15 +48,13 @@ class AddData:
         will be our first attributes.
         '''
         for i in self.contributor_dict.keys():
-            self.contributor_dict[i]["reference"] = i[0:4]
-            self.contributor_dict[i]["period"] = i[4:6]
-            self.contributor_dict[i]["survey"] = i[6:9]
-            self.contributor_dict[i]["responses"] = {}
-            self.contributor_dict[i]["createdBy"] = "fisdba"
-            self.contributor_dict[i]["createdDate"] = datetime.datetime.now()
+            self.contributor_dict[i]["reference"] = i[0:11]
+            self.contributor_dict[i]["period"] = i[11:17]
+            self.contributor_dict[i]["survey"] = i[17:]
+                
 
 x = AddData()
 x.create_key()
-print(x.contributor_dict["199603076"])
 
-
+## TODO: Add a "Choice Dictionary" to __init__ of AddData, loop through
+##       table metadata, pick up random vars from choice dict, and update contributor_dict accordingly.

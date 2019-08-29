@@ -1,8 +1,10 @@
-CREATE DATABASE CollectionDev;
+drop database collectiondev;
+CREATE DATABASE collectiondev;
 \c collectiondev;
-SET search_path TO dev01,public;
+CREATE SCHEMA dev01;
+SET search_path TO dev01;
 
-Create Table Survey
+Create Table dev01.Survey
 (
     survey              varchar(4) Primary Key,
     description         varchar(128) Not Null,
@@ -14,7 +16,7 @@ Create Table Survey
 );
 
 
-Create Table Form
+Create Table dev01.Form
 (
     FormID              Serial Primary Key,
     Survey              Varchar(4) References Survey(Survey),
@@ -28,7 +30,7 @@ Create Table Form
 );
 
 
-Create Table Question
+Create Table dev01.Question
 (
     Survey              Varchar(4) References Survey(Survey),
     QuestionCode        Varchar(8) Not Null,
@@ -41,7 +43,7 @@ Create Table Question
 );
 
 
-Create Table FormDefinition
+Create Table dev01.FormDefinition
 (
     FormID                  serial References Form(FormID),
     QuestionCode            Varchar(8) Not Null,
@@ -60,7 +62,7 @@ Create Table FormDefinition
 Create Index idx_formdefinition_question On FormDefinition(QuestionCode);
 
 
-Create Table Contributor
+Create Table dev01.Contributor
 (
     Reference                   Varchar(11) Not Null,
     Period                      Char(6) Not Null,
@@ -119,11 +121,11 @@ Create Index idx_contributor_periodsurvey On Contributor(period, survey);
 Create Index idx_contributor_surveyreference On Contributor(survey, reference);
 
 
-Create Table Response
+Create Table dev01.Response
 (
     Reference              Char(11) Not Null,
     Period                 Char(6) Not Null,
-    Survey                 Char(3) References Survey(Survey),
+    Survey                 Char(4) References Survey(Survey),
     QuestionCode           Char(4) Not Null,
     Instance               Int Not Null,
     Response               Varchar(256) Not Null,
@@ -137,7 +139,7 @@ Create Table Response
 );
 
 
-Create Table ValidationRule
+Create Table dev01.ValidationRule
 (
     Rule            Varchar(16) Primary Key,
     Name            Varchar(32) Not Null,
@@ -149,7 +151,7 @@ Create Table ValidationRule
 );
 
 
-Create Table ValidationPeriod
+Create Table dev01.ValidationPeriod
 (
     Rule            Varchar(16) References ValidationRule(Rule),
     PeriodOffset    Integer Not Null,
@@ -161,24 +163,24 @@ Create Table ValidationPeriod
 );
 
 
-Create Table ValidationForm
+Create table dev01.ValidationForm
 (
     ValidationID            serial Primary Key,
-    FormID                  Int References Form(FormID),
-    Rule                    Varchar(16) References ValidationRule(Rule),
-    QuestionCode            Varchar(4) Not Null,
-    PreCalculationFormula   Varchar(256) Not Null,
+    FormID                  Int References dev01.Form(FormID),
+    Rule                    Varchar(16) References dev01.ValidationRule(Rule),
+    PrimaryQuestion         Varchar(4) Not Null,
+    DefaultValue            Varchar(8) Not Null,
     Severity                Varchar(16) Not Null,
     CreatedBy               Varchar(16) Not Null,
     CreatedDate             timestamptz Not Null,
     LastUpdatedBy           Varchar(16),
     LastUpdatedDate         timestamptz
 );
-Create Index idx_validationform_formrule On ValidationForm(FormID,Rule);
-Create Index idx_validationform_question On ValidationForm(QuestionCode);
+Create Index idx_validationform_formrule On dev01.ValidationForm(FormID,Rule);
+Create Index idx_validationform_question On dev01.ValidationForm(PrimaryQuestion);
 
 
-Create Table ValidationAttribute
+Create Table dev01.ValidationAttribute
 (
     AttributeName   Varchar(32) Primary Key,
     Source          Varchar(32) Not Null,
@@ -189,13 +191,15 @@ Create Table ValidationAttribute
 );
 
 
-Create Table ValidationParameter
+Create Table dev01.ValidationParameter
 (
     ValidationID    Int References ValidationForm(ValidationID),
     AttributeName   Varchar(32) References ValidationAttribute(AttributeName),
     AttributeValue  Varchar(32) Not Null,
     Parameter       Varchar(32) Not Null,
     Value           Varchar(32) Not Null,
+	Source			Varchar(32) Not Null,
+	PeriodOffset	Int Not Null,
     CreatedBy       Varchar(16) Not Null,
     CreatedDate     timestamptz Not Null,
     LastUpdatedBy   Varchar(16),
@@ -204,7 +208,7 @@ Create Table ValidationParameter
 );
 
 
-Create Table ValidationOutput
+Create Table dev01.ValidationOutput
 (
     ValidationOutputID  serial Primary Key,
     Reference           Varchar(11) Not Null,
@@ -222,6 +226,7 @@ Create Table ValidationOutput
 );
 Create Index idx_validationoutput_referenceperiodsurvey On ValidationOutput(Reference, Period, Survey);
 
+/*
 Delete From Survey;
 Insert Into Survey
 (
@@ -577,4 +582,6 @@ Values
     (8,'Default','Default','incThreshold','11',current_user,now()),
     (8,'Default','Default','decThreshold','16',current_user,now()),
     (8,'Default','Default','incValue','26',current_user,now()),
-    (8,'Default','Default','decValue','31',current_user,now());    
+    (8,'Default','Default','decValue','31',current_user,now());
+*/
+
